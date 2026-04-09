@@ -16,7 +16,7 @@ export const PartySchema = new mongoose.Schema<IParty>(
   {
     name: { type: String, required: true, trim: true },
     platform: { type: String },
-    isActive: { type: Boolean, required: true, default: true },
+    isActive: { type: Boolean, default: true },
   },
   {
     timestamps: true,

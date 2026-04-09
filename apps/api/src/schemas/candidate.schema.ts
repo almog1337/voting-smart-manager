@@ -6,18 +6,18 @@ import * as mongoose from 'mongoose';
 
 export interface IResidence {
   city: string;
-  district: string;
+  district?: string;
   geographicPeriphery?: number;
-  birthCountry: string;
-  startDate: Date;
+  birthCountry?: string;
+  startDate?: Date;
   endDate?: Date;
 }
 
 export interface IEducation {
-  training: string;
-  degree: string;
-  field: string;
-  institution: string;
+  training?: string;
+  degree?: string;
+  field?: string;
+  institution?: string;
 }
 
 // ---- Roles (discriminated union) ----
@@ -25,7 +25,7 @@ export interface IEducation {
 export interface IRoleBase {
   roleType: 'party' | 'military' | 'knesset' | 'public' | 'other';
   title: string;
-  startDate: Date;
+  startDate?: Date;
   endDate?: Date;
   isActive: boolean;
   // duration is a virtual: endDate - startDate (or now - startDate if active)
@@ -34,7 +34,7 @@ export interface IRoleBase {
 export interface IPartyRole extends IRoleBase {
   roleType: 'party';
   partyId: mongoose.Types.ObjectId;
-  listPosition: number;
+  listPosition?: number;
 }
 
 export interface IMilitaryRole extends IRoleBase {
@@ -45,7 +45,7 @@ export interface IMilitaryRole extends IRoleBase {
 
 export interface IKnessetRole extends IRoleBase {
   roleType: 'knesset';
-  knessetNum: number;
+  knessetNum?: number;
 }
 
 export interface IPublicRole extends IRoleBase {
@@ -95,12 +95,12 @@ export interface IImage {
 
 export interface ICandidate {
   name: string;
-  birthYear: number;
+  birthYear?: number;
   // age: virtual
-  gender: 'male' | 'female' | 'other';
-  sector: 'secular' | 'religious';
+  gender?: 'male' | 'female' | 'other';
+  sector?: 'secular' | 'religious';
   residence: IResidence[];
-  orientation: 'right' | 'left' | 'center';
+  orientation?: 'right' | 'left' | 'center';
   languages: string[];
   isCurrentlyServing: boolean;
   education: IEducation[];
@@ -130,10 +130,10 @@ export type CandidateDocument = mongoose.HydratedDocument<
 const ResidenceSchema = new mongoose.Schema<IResidence>(
   {
     city: { type: String, required: true, trim: true },
-    district: { type: String, required: true, trim: true },
+    district: { type: String, trim: true },
     geographicPeriphery: { type: Number },
-    birthCountry: { type: String, required: true, trim: true },
-    startDate: { type: Date, required: true },
+    birthCountry: { type: String, trim: true },
+    startDate: { type: Date },
     endDate: { type: Date },
   },
   { _id: false },
@@ -141,10 +141,10 @@ const ResidenceSchema = new mongoose.Schema<IResidence>(
 
 const EducationSchema = new mongoose.Schema<IEducation>(
   {
-    training: { type: String, required: true },
-    degree: { type: String, required: true },
-    field: { type: String, required: true },
-    institution: { type: String, required: true },
+    training: { type: String },
+    degree: { type: String },
+    field: { type: String },
+    institution: { type: String },
   },
   { _id: false },
 );
@@ -158,9 +158,9 @@ const RoleSchema = new mongoose.Schema<IRoleBase>(
       required: true,
     },
     title: { type: String, required: true },
-    startDate: { type: Date, required: true },
+    startDate: { type: Date },
     endDate: { type: Date },
-    isActive: { type: Boolean, required: true, default: false },
+    isActive: { type: Boolean, default: false },
   },
   { discriminatorKey: 'roleType' },
 );
@@ -172,7 +172,7 @@ const PartyRoleSchema = new mongoose.Schema<IPartyRole>({
     ref: 'Party',
     required: true,
   },
-  listPosition: { type: Number, required: true },
+  listPosition: { type: Number },
 });
 
 // Military role discriminator
@@ -183,7 +183,7 @@ const MilitaryRoleSchema = new mongoose.Schema<IMilitaryRole>({
 
 // Knesset role discriminator
 const KnessetRoleSchema = new mongoose.Schema<IKnessetRole>({
-  knessetNum: { type: Number, required: true },
+  knessetNum: { type: Number },
 });
 
 // Public role discriminator
@@ -234,7 +234,7 @@ const CandidateTicketSchema = new mongoose.Schema<ICandidateTicket>(
       required: true,
     },
     ticketName: { type: String, required: true },
-    isPrimary: { type: Boolean, required: true, default: false },
+    isPrimary: { type: Boolean, default: false },
     vectors: { type: [TicketVectorSchema], default: [] },
   },
   { _id: false },
@@ -263,21 +263,19 @@ export const CandidateSchema = new mongoose.Schema<
 >(
   {
     name: { type: String, required: true, trim: true },
-    birthYear: { type: Number, required: true },
+    birthYear: { type: Number },
     gender: {
       type: String,
       enum: ['male', 'female', 'other'],
-      required: true,
     },
-    sector: { type: String, enum: ['secular', 'religious'], required: true },
-    residence: { type: [ResidenceSchema], required: true, default: [] },
+    sector: { type: String, enum: ['secular', 'religious'] },
+    residence: { type: [ResidenceSchema], default: [] },
     orientation: {
       type: String,
       enum: ['right', 'left', 'center'],
-      required: true,
     },
     languages: { type: [String], default: [] },
-    isCurrentlyServing: { type: Boolean, required: true, default: false },
+    isCurrentlyServing: { type: Boolean, default: false },
     education: { type: [EducationSchema], default: [] },
     roles: { type: [RoleSchema], default: [] },
     links: { type: [LinkSchema], default: [] },
