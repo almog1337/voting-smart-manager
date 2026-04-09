@@ -313,7 +313,7 @@ CandidateSchema.path<mongoose.Schema.Types.DocumentArray>('roles').discriminator
 // ============================================================
 
 CandidateSchema.virtual('age').get(function (this: CandidateDocument) {
-  return new Date().getFullYear() - this.birthYear;
+  return this.birthYear != null ? new Date().getFullYear() - this.birthYear : undefined;
 });
 
 CandidateSchema.virtual('currentParty').get(function (this: CandidateDocument) {
@@ -327,7 +327,8 @@ CandidateSchema.virtual('firstElected').get(function (
 ) {
   const years = (this.roles as IRole[])
     .filter((r): r is IKnessetRole => r.roleType === 'knesset')
-    .map((r) => r.startDate.getFullYear())
+    .filter((r) => r.startDate != null)
+    .map((r) => r.startDate!.getFullYear())
     .sort((a, b) => a - b);
   return years[0];
 });
