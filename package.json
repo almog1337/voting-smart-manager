@@ -1,0 +1,16 @@
+{
+  "name": "voting-smart",
+  "version": "0.0.1",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run start:dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "turbo run format"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  }
+}
