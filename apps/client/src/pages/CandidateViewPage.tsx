@@ -1,4 +1,4 @@
-import { Button, Card, Descriptions, Space, Spin, Table, Tag, Typography } from 'antd';
+import { Button, Card, Descriptions, Result, Space, Spin, Table, Tag, Typography } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCandidate } from '../hooks/useCandidates';
@@ -18,10 +18,11 @@ const LINK_TYPE_LABEL: Record<string, string> = {
 export default function CandidateViewPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: candidate, isLoading } = useCandidate(id!);
+  const { data: candidate, isLoading, isError } = useCandidate(id!);
 
   if (isLoading) return <Spin style={{ display: 'block', marginTop: 80 }} />;
-  if (!candidate) return <Typography.Text type="danger">מועמד לא נמצא</Typography.Text>;
+  if (isError) return <Result status="error" title="שגיאת חיבור" subTitle="לא ניתן להתחבר לשרת. בדוק את חיבור האינטרנט ונסה שנית." />;
+  if (!candidate) return <Result status="404" title="מועמד לא נמצא" />;
 
   const roleColumns = [
     { title: 'סוג', dataIndex: 'roleType', key: 'roleType', render: (v: string) => ROLE_TYPE_LABEL[v] ?? v },
@@ -133,7 +134,7 @@ export default function CandidateViewPage() {
           <Card title="השכלה">
             <Table
               dataSource={candidate.education}
-              rowKey={(r: Education, i) => String(i)}
+              rowKey={(_: Education, i) => String(i)}
               columns={educationColumns}
               pagination={false}
               size="small"
@@ -146,7 +147,7 @@ export default function CandidateViewPage() {
           <Card title="תפקידים">
             <Table
               dataSource={candidate.roles}
-              rowKey={(r: AnyRole, i) => String(i)}
+              rowKey={(_: AnyRole, i) => String(i)}
               columns={roleColumns}
               pagination={false}
               size="small"

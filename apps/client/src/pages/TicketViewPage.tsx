@@ -1,4 +1,4 @@
-import { Button, Card, Descriptions, Space, Spin, Table, Tag, Typography } from 'antd';
+import { Button, Card, Descriptions, Result, Space, Spin, Table, Tag, Typography } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTicket } from '../hooks/useTickets';
@@ -10,10 +10,11 @@ const ORIENTATION_LABEL: Record<string, string> = { right: 'ימין', left: 'ש
 export default function TicketViewPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: ticket, isLoading } = useTicket(id!);
+  const { data: ticket, isLoading, isError } = useTicket(id!);
 
   if (isLoading) return <Spin style={{ display: 'block', marginTop: 80 }} />;
-  if (!ticket) return <Typography.Text type="danger">טיקט לא נמצא</Typography.Text>;
+  if (isError) return <Result status="error" title="שגיאת חיבור" subTitle="לא ניתן להתחבר לשרת. בדוק את חיבור האינטרנט ונסה שנית." />;
+  if (!ticket) return <Result status="404" title="טיקט לא נמצא" />;
 
   const vectorColumns = [
     { title: 'שם', dataIndex: 'name', key: 'name' },
@@ -53,7 +54,7 @@ export default function TicketViewPage() {
           {ticket.vectors?.length ? (
             <Table
               dataSource={ticket.vectors}
-              rowKey={(r: Vector, i) => String(i)}
+              rowKey={(_: Vector, i) => String(i)}
               columns={vectorColumns}
               pagination={false}
               size="small"

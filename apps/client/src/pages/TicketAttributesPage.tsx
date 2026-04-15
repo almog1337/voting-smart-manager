@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
+import { Alert, Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteTicketAttribute, useTicketAttributes } from '../hooks/useTicketAttributes';
@@ -30,7 +30,7 @@ const IDENTIFIER_VALUE_LABELS: Record<string, Record<string, string>> = {
 
 export default function TicketAttributesPage() {
   const navigate = useNavigate();
-  const { data, isLoading } = useTicketAttributes();
+  const { data, isLoading, isError } = useTicketAttributes();
   const deleteMutation = useDeleteTicketAttribute();
 
   const columns = [
@@ -120,6 +120,15 @@ export default function TicketAttributesPage() {
           מאפיין חדש
         </Button>
       </div>
+      {isError && (
+        <Alert
+          type="error"
+          message="שגיאת חיבור"
+          description="לא ניתן להתחבר לשרת. בדוק את חיבור האינטרנט ונסה שנית."
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <Table
         dataSource={data}
         rowKey="_id"

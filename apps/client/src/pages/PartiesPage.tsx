@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
+import { Alert, Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteParty, useParties } from '../hooks/useParties';
@@ -6,7 +6,7 @@ import type { Party } from '../types';
 
 export default function PartiesPage() {
   const navigate = useNavigate();
-  const { data, isLoading } = useParties();
+  const { data, isLoading, isError } = useParties();
   const deleteMutation = useDeleteParty();
 
   const columns = [
@@ -61,6 +61,15 @@ export default function PartiesPage() {
           מפלגה חדשה
         </Button>
       </div>
+      {isError && (
+        <Alert
+          type="error"
+          message="שגיאת חיבור"
+          description="לא ניתן להתחבר לשרת. בדוק את חיבור האינטרנט ונסה שנית."
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <Table
         dataSource={data}
         rowKey="_id"

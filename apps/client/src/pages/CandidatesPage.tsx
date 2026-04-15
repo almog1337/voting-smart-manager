@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
+import { Alert, Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useCandidates, useDeleteCandidate } from '../hooks/useCandidates';
@@ -18,7 +18,7 @@ const ORIENTATION_LABEL: Record<string, string> = {
 
 export default function CandidatesPage() {
   const navigate = useNavigate();
-  const { data, isLoading } = useCandidates();
+  const { data, isLoading, isError } = useCandidates();
   const deleteMutation = useDeleteCandidate();
 
   const columns = [
@@ -114,6 +114,15 @@ export default function CandidatesPage() {
           מועמד חדש
         </Button>
       </div>
+      {isError && (
+        <Alert
+          type="error"
+          message="שגיאת חיבור"
+          description="לא ניתן להתחבר לשרת. בדוק את חיבור האינטרנט ונסה שנית."
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <Table
         dataSource={data}
         rowKey="_id"

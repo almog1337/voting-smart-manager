@@ -1,4 +1,4 @@
-import { Button, Card, Descriptions, Space, Spin, Tag, Typography } from 'antd';
+import { Button, Card, Descriptions, Result, Space, Spin, Tag, Typography } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTicketAttribute } from '../hooks/useTicketAttributes';
@@ -40,11 +40,12 @@ const PARTICIPATION_TYPE_LABELS: Record<string, string> = {
 export default function TicketAttributeViewPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: attr, isLoading } = useTicketAttribute(id!);
+  const { data: attr, isLoading, isError } = useTicketAttribute(id!);
   const { data: allTickets } = useTickets();
 
   if (isLoading) return <Spin style={{ display: 'block', marginTop: 80 }} />;
-  if (!attr) return <Typography.Text type="danger">מאפיין לא נמצא</Typography.Text>;
+  if (isError) return <Result status="error" title="שגיאת חיבור" subTitle="לא ניתן להתחבר לשרת. בדוק את חיבור האינטרנט ונסה שנית." />;
+  if (!attr) return <Result status="404" title="מאפיין לא נמצא" />;
 
   const linkedTickets = allTickets?.filter(t => attr.tickets.includes(t._id)) ?? [];
 

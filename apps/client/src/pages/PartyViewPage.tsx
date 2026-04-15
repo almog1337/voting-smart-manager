@@ -1,4 +1,4 @@
-import { Button, Card, Descriptions, Space, Spin, Table, Tag, Typography } from 'antd';
+import { Button, Card, Descriptions, Result, Space, Spin, Table, Tag, Typography } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useParty } from '../hooks/useParties';
@@ -10,10 +10,11 @@ const ORIENTATION_LABEL: Record<string, string> = { right: 'ימין', left: 'ש
 export default function PartyViewPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: party, isLoading } = useParty(id!);
+  const { data: party, isLoading, isError } = useParty(id!);
 
   if (isLoading) return <Spin style={{ display: 'block', marginTop: 80 }} />;
-  if (!party) return <Typography.Text type="danger">מפלגה לא נמצאה</Typography.Text>;
+  if (isError) return <Result status="error" title="שגיאת חיבור" subTitle="לא ניתן להתחבר לשרת. בדוק את חיבור האינטרנט ונסה שנית." />;
+  if (!party) return <Result status="404" title="מפלגה לא נמצאה" />;
 
   const candidateColumns = [
     {

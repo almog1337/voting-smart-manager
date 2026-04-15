@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
+import { Alert, Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteTicket, useTickets } from '../hooks/useTickets';
@@ -11,7 +11,7 @@ const ORIENTATION_LABEL: Record<string, string> = {
 
 export default function TicketsPage() {
   const navigate = useNavigate();
-  const { data, isLoading } = useTickets();
+  const { data, isLoading, isError } = useTickets();
   const deleteMutation = useDeleteTicket();
 
   const columns = [
@@ -66,6 +66,15 @@ export default function TicketsPage() {
           טיקט חדש
         </Button>
       </div>
+      {isError && (
+        <Alert
+          type="error"
+          message="שגיאת חיבור"
+          description="לא ניתן להתחבר לשרת. בדוק את חיבור האינטרנט ונסה שנית."
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <Table
         dataSource={data}
         rowKey="_id"
