@@ -15,6 +15,16 @@ export class TicketsService {
     @Inject(MODEL_TICKET) private readonly ticketModel: Model<ITicket>,
   ) {}
 
+  async findAll(): Promise<ITicket[]> {
+    return this.ticketModel.find().lean() as unknown as ITicket[];
+  }
+
+  async findOne(id: string): Promise<ITicket> {
+    const doc = await this.ticketModel.findById(id).lean() as unknown as ITicket | null;
+    if (!doc) throw new NotFoundException(`Ticket ${id} not found`);
+    return doc;
+  }
+
   async create(dto: CreateTicketDto): Promise<ITicket> {
     try {
       return await new this.ticketModel(dto).save();

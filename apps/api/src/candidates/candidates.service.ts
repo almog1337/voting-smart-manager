@@ -15,6 +15,16 @@ export class CandidatesService {
     private readonly candidateModel: Model<ICandidate>,
   ) {}
 
+  async findAll(): Promise<ICandidate[]> {
+    return this.candidateModel.find().lean({ virtuals: true }) as unknown as ICandidate[];
+  }
+
+  async findOne(id: string): Promise<ICandidate> {
+    const doc = await this.candidateModel.findById(id).lean({ virtuals: true }) as unknown as ICandidate | null;
+    if (!doc) throw new NotFoundException(`Candidate ${id} not found`);
+    return doc;
+  }
+
   async create(dto: CreateCandidateDto): Promise<ICandidate> {
     return new this.candidateModel(dto).save();
   }

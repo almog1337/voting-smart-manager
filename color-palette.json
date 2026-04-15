@@ -1,0 +1,49 @@
+{
+  "brand": {
+    "primary": "#2952d9",
+    "primaryLight": "#5982fe",
+    "primaryGradient": "linear-gradient(135deg, #2952d9, #5982fe)"
+  },
+  "accent": {
+    "teal": "#50bab6",
+    "neutralStrong": "#424b68"
+  },
+  "semantic": {
+    "success": "#88b12d",
+    "warning": "#fa8501",
+    "attention": "#f9bc01",
+    "destructive": "#d93025"
+  },
+  "gray": {
+    "50": "#f8f9fa",
+    "100": "#f1f3f5",
+    "200": "#e9ecef",
+    "400": "#ced4da",
+    "600": "#868e96",
+    "800": "#343a40",
+    "900": "#212529"
+  },
+  "surfaces": {
+    "background": "#fcfcfc",
+    "card": "#ffffff",
+    "secondary": "#f3f4f6",
+    "mutedText": "#6b7280",
+    "border": "#e5e7eb"
+  },
+  "text": {
+    "primary": "#1a1b2e",
+    "onPrimary": "#ffffff",
+    "onAccent": "#ffffff"
+  },
+  "shadows": {
+    "card": "0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.06)",
+    "cardHover": "0 4px 16px rgba(0,0,0,0.08)",
+    "nav": "0 1px 0 rgba(0,0,0,0.08)"
+  },
+  "rules": {
+    "maxAccentsPerComponent": 2,
+    "gradientUsage": "hero and main CTA only",
+    "attentionColorRestrictions": "never on buttons, large backgrounds, or text blocks",
+    "noNewColorsOutsidePalette": true
+  }
+}

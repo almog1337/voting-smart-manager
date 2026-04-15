@@ -13,6 +13,19 @@ import { UpdatePartyDto } from './dto/update-party.dto.js';
 export class PartiesService {
   constructor(@Inject(MODEL_PARTY) private readonly partyModel: Model<IParty>) {}
 
+  async findAll(): Promise<IParty[]> {
+    return this.partyModel.find().lean({ virtuals: true }) as unknown as IParty[];
+  }
+
+  async findOne(id: string): Promise<IParty> {
+    const doc = await this.partyModel
+      .findById(id)
+      .populate('candidates')
+      .lean({ virtuals: true }) as unknown as IParty | null;
+    if (!doc) throw new NotFoundException(`Party ${id} not found`);
+    return doc;
+  }
+
   async create(dto: CreatePartyDto): Promise<IParty> {
     try {
       return await new this.partyModel(dto).save();

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -25,6 +26,21 @@ import { UpdateCandidateDto } from './dto/update-candidate.dto.js';
 @Controller('candidates')
 export class CandidatesController {
   constructor(private readonly candidatesService: CandidatesService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List all candidates' })
+  @ApiOkResponse({ description: 'List of candidates' })
+  findAll() {
+    return this.candidatesService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a candidate by ID' })
+  @ApiParam({ name: 'id', description: 'Candidate ObjectId' })
+  @ApiOkResponse({ description: 'Candidate found' })
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.candidatesService.findOne(id);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create a candidate' })

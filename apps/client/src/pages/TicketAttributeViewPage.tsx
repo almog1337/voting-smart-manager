@@ -1,0 +1,84 @@
+import { Button, Card, Descriptions, Space, Spin, Tag, Typography } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useTicketAttribute } from '../hooks/useTicketAttributes';
+import { useTickets } from '../hooks/useTickets';
+
+const TYPE_LABELS: Record<string, string> = {
+  committee: 'ועדה',
+  sub_committee: 'תת-ועדה',
+  government_ministry: 'משרד ממשלתי',
+  role_type: 'סוג תפקיד',
+  education_field: 'תחום השכלה',
+  residence_district: 'מחוז מגורים',
+};
+
+export default function TicketAttributeViewPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { data: attr, isLoading } = useTicketAttribute(id!);
+  const { data: allTickets } = useTickets();
+
+  if (isLoading) return <Spin style={{ display: 'block', marginTop: 80 }} />;
+  if (!attr) return <Typography.Text type="danger">מאפיין לא נמצא</Typography.Text>;
+
+  const linkedTickets = allTickets?.filter(t => attr.tickets.includes(t._id)) ?? [];
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+        <Button icon={<ArrowRightOutlined />} onClick={() => navigate('/ticket-attributes')} />
+        <Typography.Title level={4} style={{ margin: 0 }}>
+          <Tag style={{ marginLeft: 8, fontSize: 14 }}>{TYPE_LABELS[attr.type] ?? attr.type}</Tag>
+          מאפיין טיקט
+        </Typography.Title>
+      </div>
+
+      <Space direction="vertical" size={16} style={{ width: '100%' }}>
+        <Card title="פרטי מאפיין">
+          <Descriptions column={2} bordered size="small">
+            <Descriptions.Item label="סוג">
+              <Tag>{TYPE_LABELS[attr.type] ?? attr.type}</Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="ניקוד">{attr.score}</Descriptions.Item>
+            <Descriptions.Item label="תיאור" span={2}>{attr.description ?? '—'}</Descriptions.Item>
+          </Descriptions>
+        </Card>
+
+        <Card title="מזהים">
+          <Descriptions column={2} bordered size="small">
+            {Object.entries(attr.identifiers).map(([k, v]) => (
+              <Descriptions.Item key={k} label={k}>{v}</Descriptions.Item>
+            ))}
+          </Descriptions>
+        </Card>
+
+        <Card
+          title={
+            <Space>
+              <span>טיקטים משויכים</span>
+              <Tag color="blue">{linkedTickets.length}</Tag>
+            </Space>
+          }
+        >
+          {linkedTickets.length ? (
+            <Space wrap>
+              {linkedTickets.map(t => (
+                <Button
+                  key={t._id}
+                  type="link"
+                  style={{ padding: 0 }}
+                  onClick={() => navigate(`/tickets/${t._id}`)}
+                >
+                  {t.name}
+                </Button>
+              ))}
+            </Space>
+          ) : (
+            <Typography.Text type="secondary">אין טיקטים משויכים</Typography.Text>
+          )}
+        </Card>
+      </Space>
+    </div>
+  );
+}

@@ -5,7 +5,9 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run start:dev",
+    "dev": "turbo run dev start:dev",
+    "dev:api": "turbo run start:dev --filter=@voting-smart/api",
+    "dev:client": "turbo run dev --filter=@voting-smart/client",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "format": "turbo run format"

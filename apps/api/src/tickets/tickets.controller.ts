@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -25,6 +26,21 @@ import { TicketsService } from './tickets.service.js';
 @Controller('tickets')
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List all tickets' })
+  @ApiOkResponse({ description: 'List of tickets' })
+  findAll() {
+    return this.ticketsService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a ticket by ID' })
+  @ApiParam({ name: 'id', description: 'Ticket ObjectId' })
+  @ApiOkResponse({ description: 'Ticket found' })
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.ticketsService.findOne(id);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create a ticket' })

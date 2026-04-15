@@ -15,6 +15,16 @@ export class TicketAttributesService {
     private readonly taModel: Model<ITicketAttribute>,
   ) {}
 
+  async findAll(): Promise<ITicketAttribute[]> {
+    return this.taModel.find().lean() as unknown as ITicketAttribute[];
+  }
+
+  async findOne(id: string): Promise<ITicketAttribute> {
+    const doc = await this.taModel.findById(id).lean() as unknown as ITicketAttribute | null;
+    if (!doc) throw new NotFoundException(`TicketAttribute ${id} not found`);
+    return doc;
+  }
+
   async create(dto: CreateTicketAttributeDto): Promise<ITicketAttribute> {
     return new this.taModel(dto).save();
   }

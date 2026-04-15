@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -25,6 +26,21 @@ import { PartiesService } from './parties.service.js';
 @Controller('parties')
 export class PartiesController {
   constructor(private readonly partiesService: PartiesService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List all parties' })
+  @ApiOkResponse({ description: 'List of parties' })
+  findAll() {
+    return this.partiesService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a party by ID' })
+  @ApiParam({ name: 'id', description: 'Party ObjectId' })
+  @ApiOkResponse({ description: 'Party found' })
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.partiesService.findOne(id);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create a party' })

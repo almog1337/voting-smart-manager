@@ -1,0 +1,111 @@
+import { Button, Popconfirm, Space, Table, Tag, Typography } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { useDeleteTicketAttribute, useTicketAttributes } from '../hooks/useTicketAttributes';
+import type { TicketAttribute } from '../types';
+
+const TYPE_LABELS: Record<string, string> = {
+  committee: 'ועדה',
+  sub_committee: 'תת-ועדה',
+  government_ministry: 'משרד ממשלתי',
+  role_type: 'סוג תפקיד',
+  education_field: 'תחום השכלה',
+  residence_district: 'מחוז מגורים',
+};
+
+export default function TicketAttributesPage() {
+  const navigate = useNavigate();
+  const { data, isLoading } = useTicketAttributes();
+  const deleteMutation = useDeleteTicketAttribute();
+
+  const columns = [
+    {
+      title: 'סוג',
+      dataIndex: 'type',
+      key: 'type',
+      render: (v: string) => <Tag>{TYPE_LABELS[v] ?? v}</Tag>,
+    },
+    { title: 'ניקוד', dataIndex: 'score', key: 'score' },
+    {
+      title: 'טיקטים',
+      dataIndex: 'tickets',
+      key: 'tickets',
+      render: (tickets: string[]) => tickets.length,
+    },
+    {
+      title: 'מזהים',
+      key: 'identifiers',
+      render: (_: unknown, record: TicketAttribute) => (
+        <Space wrap>
+          {Object.entries(record.identifiers).map(([k, v]) => (
+            <Tag key={k}>
+              {k}: {v}
+            </Tag>
+          ))}
+        </Space>
+      ),
+    },
+    {
+      title: 'תיאור',
+      dataIndex: 'description',
+      key: 'description',
+      render: (v?: string) => v ?? '—',
+    },
+    {
+      title: 'פעולות',
+      key: 'actions',
+      render: (_: unknown, record: TicketAttribute) => (
+        <Space>
+          <Button
+            size="small"
+            type="primary"
+            ghost
+            onClick={() => navigate(`/ticket-attributes/${record._id}`)}
+          >
+            צפייה
+          </Button>
+          <Button
+            size="small"
+            onClick={() => navigate(`/ticket-attributes/${record._id}/edit`)}
+          >
+            עריכה
+          </Button>
+          <Popconfirm
+            title="למחוק את המאפיין?"
+            onConfirm={() => deleteMutation.mutate(record._id)}
+            okText="כן"
+            cancelText="לא"
+          >
+            <Button size="small" danger loading={deleteMutation.isPending}>
+              מחיקה
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+        <Typography.Title level={4} style={{ margin: 0 }}>
+          מאפייני טיקטים
+        </Typography.Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => navigate('/ticket-attributes/new')}
+        >
+          מאפיין חדש
+        </Button>
+      </div>
+      <Table
+        dataSource={data}
+        rowKey="_id"
+        columns={columns}
+        loading={isLoading}
+        pagination={{ pageSize: 20 }}
+      />
+    </div>
+  );
+}
