@@ -11,13 +11,28 @@ export type TicketAttributeType =
   | 'residence_district';
 // TODO: extend this union as new scoring rule types are defined
 
+export type CandidateRoleType = 'party' | 'military' | 'knesset' | 'public' | 'other';
+
+export type CommitteeParticipationType = 'participation' | 'management' | 'chair';
+
+export interface IIdentifiers {
+  committeeName?: string;     // committee, sub_committee
+  subCommitteeName?: string;  // sub_committee
+  participationType?: CommitteeParticipationType; // committee, sub_committee
+  ministryName?: string;      // government_ministry
+  roleType?: CandidateRoleType; // role_type
+  field?: string;             // education_field
+  district?: string;          // residence_district
+}
+
 // ---- Root document interface ----
 
 export interface ITicketAttribute {
   tickets: mongoose.Types.ObjectId[];
   type: TicketAttributeType;
   score: number;
-  identifiers: Map<string, string>;
+  identifiers: IIdentifiers;
+  vectorNames: string[];
   description?: string;
 }
 
@@ -49,10 +64,15 @@ export const TicketAttributeSchema = new mongoose.Schema<ITicketAttribute>(
     },
     score: { type: Number, required: true },
     identifiers: {
-      type: Map,
-      of: String,
-      required: true,
+      committeeName: { type: String },
+      subCommitteeName: { type: String },
+      participationType: { type: String, enum: ['participation', 'management', 'chair'] },
+      ministryName: { type: String },
+      roleType: { type: String, enum: ['party', 'military', 'knesset', 'public', 'other'] },
+      field: { type: String },
+      district: { type: String },
     },
+    vectorNames: { type: [String], default: [] },
     description: { type: String },
   },
   { timestamps: true },
@@ -60,6 +80,3 @@ export const TicketAttributeSchema = new mongoose.Schema<ITicketAttribute>(
 
 TicketAttributeSchema.index({ type: 1 });
 TicketAttributeSchema.index({ tickets: 1 });
-// Wildcard index covers all dynamic Map keys (e.g. identifiers.committeeName)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-TicketAttributeSchema.index({ 'identifiers.$**': 1 } as any);

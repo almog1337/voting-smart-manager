@@ -13,6 +13,30 @@ const TYPE_LABELS: Record<string, string> = {
   residence_district: 'מחוז מגורים',
 };
 
+const IDENTIFIER_LABELS: Record<string, string> = {
+  committeeName: 'שם ועדה',
+  subCommitteeName: 'שם תת-ועדה',
+  participationType: 'סוג השתתפות',
+  ministryName: 'שם משרד',
+  roleType: 'סוג תפקיד',
+  field: 'תחום השכלה',
+  district: 'מחוז',
+};
+
+const ROLE_TYPE_LABELS: Record<string, string> = {
+  party: 'מפלגה',
+  military: 'צבאי',
+  knesset: 'כנסת',
+  public: 'ציבורי',
+  other: 'אחר',
+};
+
+const PARTICIPATION_TYPE_LABELS: Record<string, string> = {
+  participation: 'השתתפות',
+  management: 'ניהול',
+  chair: 'יו"ר',
+};
+
 export default function TicketAttributeViewPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -41,15 +65,28 @@ export default function TicketAttributeViewPage() {
               <Tag>{TYPE_LABELS[attr.type] ?? attr.type}</Tag>
             </Descriptions.Item>
             <Descriptions.Item label="ניקוד">{attr.score}</Descriptions.Item>
+            <Descriptions.Item label="וקטורים" span={2}>
+              {attr.vectorNames?.length
+                ? attr.vectorNames.map((n) => <Tag key={n}>{n}</Tag>)
+                : <Typography.Text type="secondary">—</Typography.Text>}
+            </Descriptions.Item>
             <Descriptions.Item label="תיאור" span={2}>{attr.description ?? '—'}</Descriptions.Item>
           </Descriptions>
         </Card>
 
         <Card title="מזהים">
           <Descriptions column={2} bordered size="small">
-            {Object.entries(attr.identifiers).map(([k, v]) => (
-              <Descriptions.Item key={k} label={k}>{v}</Descriptions.Item>
-            ))}
+            {(Object.entries(attr.identifiers) as [string, string | undefined][])
+              .filter(([, v]) => v !== undefined)
+              .map(([k, v]) => (
+                <Descriptions.Item key={k} label={IDENTIFIER_LABELS[k] ?? k}>
+                  {k === 'roleType'
+                    ? (ROLE_TYPE_LABELS[v!] ?? v)
+                    : k === 'participationType'
+                    ? (PARTICIPATION_TYPE_LABELS[v!] ?? v)
+                    : v}
+                </Descriptions.Item>
+              ))}
           </Descriptions>
         </Card>
 

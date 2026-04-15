@@ -132,11 +132,24 @@ export type TicketAttributeType =
   | 'education_field'
   | 'residence_district';
 
+export type CommitteeParticipationType = 'participation' | 'management' | 'chair';
+
+export interface TicketAttributeIdentifiers {
+  committeeName?: string;     // committee, sub_committee
+  subCommitteeName?: string;  // sub_committee
+  participationType?: CommitteeParticipationType; // committee, sub_committee
+  ministryName?: string;      // government_ministry
+  roleType?: RoleType;        // role_type
+  field?: string;             // education_field
+  district?: string;          // residence_district
+}
+
 export interface TicketAttribute {
   _id: string;
   tickets: string[];
   type: TicketAttributeType;
   score: number;
-  identifiers: Record<string, string>;
+  identifiers: TicketAttributeIdentifiers;
+  vectorNames: string[];
   description?: string;
 }
