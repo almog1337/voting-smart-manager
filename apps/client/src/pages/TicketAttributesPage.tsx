@@ -13,6 +13,21 @@ const TYPE_LABELS: Record<string, string> = {
   residence_district: 'מחוז מגורים',
 };
 
+const IDENTIFIER_LABELS: Record<string, string> = {
+  committeeName: 'ועדה',
+  subCommitteeName: 'תת-ועדה',
+  participationType: 'סוג השתתפות',
+  ministryName: 'משרד',
+  roleType: 'סוג תפקיד',
+  field: 'תחום',
+  district: 'מחוז',
+};
+
+const IDENTIFIER_VALUE_LABELS: Record<string, Record<string, string>> = {
+  participationType: { participation: 'השתתפות', management: 'ניהול', chair: 'יו"ר' },
+  roleType: { party: 'מפלגתי', military: 'צבאי', knesset: 'כנסת', public: 'ציבורי', other: 'אחר' },
+};
+
 export default function TicketAttributesPage() {
   const navigate = useNavigate();
   const { data, isLoading } = useTicketAttributes();
@@ -37,11 +52,17 @@ export default function TicketAttributesPage() {
       key: 'identifiers',
       render: (_: unknown, record: TicketAttribute) => (
         <Space wrap>
-          {Object.entries(record.identifiers).map(([k, v]) => (
-            <Tag key={k}>
-              {k}: {v}
-            </Tag>
-          ))}
+          {Object.entries(record.identifiers)
+            .filter(([, v]) => v !== undefined && v !== null && v !== '')
+            .map(([k, v]) => {
+              const label = IDENTIFIER_LABELS[k] ?? k;
+              const value = IDENTIFIER_VALUE_LABELS[k]?.[v as string] ?? v;
+              return (
+                <Tag key={k}>
+                  {label}: {value}
+                </Tag>
+              );
+            })}
         </Space>
       ),
     },

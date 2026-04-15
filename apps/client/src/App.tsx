@@ -1,6 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { App as AntApp, ConfigProvider } from 'antd';
 import heIL from 'antd/locale/he_IL';
 import AppLayout from './components/Layout';
@@ -159,7 +158,6 @@ export default function App() {
             </Routes>
           </BrowserRouter>
         </AntApp>
-        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ConfigProvider>
   );

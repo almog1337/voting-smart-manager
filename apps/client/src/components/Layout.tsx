@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
-const { Sider, Content, Header } = Layout;
+const { Sider, Content } = Layout;
 
 const NAV_ITEMS = [
   { key: '/candidates', icon: <TeamOutlined />, label: 'מועמדים' },
@@ -52,27 +52,11 @@ export default function AppLayout() {
       </Sider>
 
       <Layout style={{ background: '#f3f4f6' }}>
-        <Header
-          style={{
-            background: '#ffffff',
-            padding: '0 28px',
-            borderBottom: '1px solid #e5e7eb',
-            boxShadow: '0 1px 0 rgba(0,0,0,0.08)',
-            display: 'flex',
-            alignItems: 'center',
-            height: 56,
-          }}
-        >
-          <span style={{ fontWeight: 600, fontSize: 15, color: '#424b68' }}>
-            {NAV_ITEMS.find((item) => location.pathname.startsWith(item.key))?.label ?? 'ניהול'}
-          </span>
-        </Header>
-
         <Content
           style={{
             padding: 28,
             background: '#f3f4f6',
-            minHeight: 'calc(100vh - 56px)',
+            minHeight: '100vh',
           }}
         >
           <Outlet />
