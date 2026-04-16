@@ -22,7 +22,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
-  app.enableCors({ origin: 'http://localhost:5173' });
+  app.enableCors({
+    origin: ['http://localhost:5173', 'https://voting-smart-manager-client.vercel.app'],
+  });
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') ?? 3000;
