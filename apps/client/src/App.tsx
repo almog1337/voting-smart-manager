@@ -15,6 +15,7 @@ import TicketViewPage from './pages/TicketViewPage';
 import TicketAttributesPage from './pages/TicketAttributesPage';
 import TicketAttributeFormPage from './pages/TicketAttributeFormPage';
 import TicketAttributeViewPage from './pages/TicketAttributeViewPage';
+import SettingsPage from './pages/SettingsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
@@ -154,6 +155,7 @@ export default function App() {
                 <Route path="/ticket-attributes/new" element={<TicketAttributeFormPage />} />
                 <Route path="/ticket-attributes/:id/edit" element={<TicketAttributeFormPage />} />
                 <Route path="/ticket-attributes/:id" element={<TicketAttributeViewPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
               </Route>
             </Routes>
           </BrowserRouter>

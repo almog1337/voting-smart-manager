@@ -95,22 +95,46 @@ export default function CandidateViewPage() {
 
         {/* Virtuals */}
         <Card title="שדות מחושבים" style={{ background: '#f8f9fa' }}>
-          <Descriptions column={4} bordered size="small">
-            <Descriptions.Item label="גיל">
-              {candidate.age != null ? <Tag color="purple">{candidate.age}</Tag> : '—'}
-            </Descriptions.Item>
-            <Descriptions.Item label="מפלגה נוכחית">
-              {candidate.currentParty ? (
-                <Tag color="blue">{(candidate.currentParty as any).title ?? '—'}</Tag>
-              ) : '—'}
-            </Descriptions.Item>
-            <Descriptions.Item label="נבחר לראשונה">
-              {candidate.firstElected != null ? <Tag color="geekblue">{candidate.firstElected}</Tag> : '—'}
-            </Descriptions.Item>
-            <Descriptions.Item label="ותק (שנים)">
-              {candidate.seniorityDuration != null ? `${candidate.seniorityDuration}ש'` : '—'}
-            </Descriptions.Item>
-          </Descriptions>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Descriptions column={4} bordered size="small">
+              <Descriptions.Item label="גיל">
+                {candidate.age != null ? <Tag color="purple">{candidate.age}</Tag> : '—'}
+              </Descriptions.Item>
+              <Descriptions.Item label="מפלגה נוכחית">
+                {candidate.currentParty ? (
+                  <Tag color="blue">{(candidate.currentParty as any).title ?? '—'}</Tag>
+                ) : '—'}
+              </Descriptions.Item>
+              <Descriptions.Item label="נבחר לראשונה">
+                {candidate.firstElected != null ? <Tag color="geekblue">{candidate.firstElected}</Tag> : '—'}
+              </Descriptions.Item>
+              <Descriptions.Item label="ותק (שנים)">
+                {candidate.seniorityDuration != null ? `${candidate.seniorityDuration}ש'` : '—'}
+              </Descriptions.Item>
+            </Descriptions>
+            {candidate.tickets?.length > 0 && (
+              <Card title="טיקטים" size="small">
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  {candidate.tickets.map((t: CandidateTicket, i: number) => (
+                    <Card key={i} size="small" type="inner" title={
+                      <Space>
+                        <span>{t.ticketName}</span>
+                        {t.isPrimary && <Tag color="gold">ראשי</Tag>}
+                      </Space>
+                    }>
+                      {t.vectors?.length > 0 ? (
+                        <Space wrap>
+                          {t.vectors.map((v, j) => (
+                            <Tag key={j} color="purple">{v.vectorName}: {v.score}</Tag>
+                          ))}
+                        </Space>
+                      ) : <Typography.Text type="secondary">אין וקטורים</Typography.Text>}
+                    </Card>
+                  ))}
+                </Space>
+              </Card>
+            )}
+          </Space>
         </Card>
 
         {/* Residence */}
@@ -175,30 +199,6 @@ export default function CandidateViewPage() {
                 <Button key={i} type="link" href={l.url} target="_blank" rel="noopener noreferrer">
                   {LINK_TYPE_LABEL[l.linkType] ?? l.linkType}
                 </Button>
-              ))}
-            </Space>
-          </Card>
-        )}
-
-        {/* Tickets */}
-        {candidate.tickets?.length > 0 && (
-          <Card title="כרטיסים">
-            <Space direction="vertical" style={{ width: '100%' }}>
-              {candidate.tickets.map((t: CandidateTicket, i: number) => (
-                <Card key={i} size="small" type="inner" title={
-                  <Space>
-                    <span>{t.ticketName}</span>
-                    {t.isPrimary && <Tag color="gold">ראשי</Tag>}
-                  </Space>
-                }>
-                  {t.vectors?.length > 0 ? (
-                    <Space wrap>
-                      {t.vectors.map((v, j) => (
-                        <Tag key={j} color="purple">{v.vectorName}: {v.score}</Tag>
-                      ))}
-                    </Space>
-                  ) : <Typography.Text type="secondary">אין וקטורים</Typography.Text>}
-                </Card>
               ))}
             </Space>
           </Card>

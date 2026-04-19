@@ -4,6 +4,7 @@ import {
   BankOutlined,
   TagsOutlined,
   ApartmentOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ const NAV_ITEMS = [
   { key: '/parties', icon: <BankOutlined />, label: 'מפלגות' },
   { key: '/tickets', icon: <TagsOutlined />, label: 'טיקטים' },
   { key: '/ticket-attributes', icon: <ApartmentOutlined />, label: 'מאפייני טיקטים' },
+  { key: '/settings', icon: <SettingOutlined />, label: 'הגדרות' },
 ];
 
 export default function AppLayout() {
